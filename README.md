@@ -1,3 +1,15 @@
+> ## About this fork
+> This fork adds an **Analog H-Pos** option to the PSX core, so you can centre the picture on a CRT without touching the TV's service menu.
+>
+> - OSD: "Video & Audio" > "Analog H-Pos"
+> - Range: -16 to +14 pixels, in 2 pixel steps. 0 is identical to stock
+> - Works by moving HSync relative to the picture. The Fixed HBlank window moves with it
+> - Tested on composite. RGB, VGA and direct video not yet tested
+>
+> Changed files: `PSX.sv`, `rtl/gpu.vhd`, `rtl/gpu_videoout_async.vhd`, `rtl/pGPU.vhd`, `rtl/psx_mister.vhd`, `rtl/psx_top.vhd`
+>
+> Prebuilt core: see [Releases](../../releases). Everything below is the original upstream README.
+
 # [Playstation](https://en.wikipedia.org/wiki/PlayStation_(console)) for [MiSTer Platform](https://github.com/MiSTer-devel/Main_MiSTer/wiki)
 
 ## Hardware Requirements
