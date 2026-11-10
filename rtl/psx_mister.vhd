@@ -59,6 +59,7 @@ entity psx_mister is
       fixedVBlank           : in  std_logic;
       vCrop                 : in  std_logic_vector(1 downto 0);
       hCrop                 : in  std_logic;
+      hPosOffset            : in  std_logic_vector(3 downto 0) := (others => '0');
       SPUon                 : in  std_logic;
       SPUIRQTrigger         : in  std_logic;
       SPUSDRAM              : in  std_logic;
@@ -352,6 +353,7 @@ begin
       fixedVBlank           => fixedVBlank,
       vCrop                 => vCrop,      
       hCrop                 => hCrop,
+      hPosOffset            => hPosOffset,
       SPUon                 => SPUon,
       SPUIRQTrigger         => SPUIRQTrigger,
       SPUSDRAM              => SPUSDRAM,

@@ -41,6 +41,7 @@ entity gpu is
       fixedVBlank          : in  std_logic;
       vCrop                : in  std_logic_vector(1 downto 0);
       hCrop                : in  std_logic;
+      hPosOffset           : in  std_logic_vector(3 downto 0) := (others => '0');
 
 	  oldGPU               : in  std_logic;
 
@@ -1878,6 +1879,7 @@ begin
    videoout_settings.fixedVBlank             <= fixedVBlank;
    videoout_settings.vCrop                   <= vCrop;
    videoout_settings.hCrop                   <= hCrop;
+   videoout_settings.hPosOffset              <= signed(hPosOffset);
    videoout_settings.dither24                <= dither24;
    videoout_settings.render24                <= render24;
    

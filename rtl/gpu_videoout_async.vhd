@@ -605,6 +605,7 @@ begin
    
    process (clkvid)
       variable vsync_hstart  : integer range 0 to 4095;
+      variable hposShift     : integer range -160 to 140;
       variable vsync_vstart  : integer range 0 to 511;
       variable nextLineCalc  : unsigned(8 downto 0);
    begin
@@ -869,7 +870,13 @@ begin
                
             end case;
             
-            hsync_start <= 32;
+            -- Analog H-Pos: positive = hsync earlier = picture moves right (2 pixels per step)
+            hposShift := to_integer(videoout_settings.hPosOffset) * 2 * clkDiv;
+            if (32 + hposShift < 1) then
+               hsync_start <= htotal + 32 + hposShift;
+            else
+               hsync_start <= 32 + hposShift;
+            end if;
             
             if (nextHCount = hsync_start) then 
                hsync_end <= 252;
@@ -891,7 +898,7 @@ begin
             vsync_vstart := 242;
             if (videoout_settings.GPUSTAT_VertInterlace = '1' and InterlaceFieldN = '0' and videoout_settings.syncInterlace = '0') then
                -- half line later
-               vsync_hstart := 32 + 3413/2;
+               vsync_hstart := 32 + 3413/2 + hposShift;
                vsync_vstart := vsync_vstart + 1;
             end if;
 
