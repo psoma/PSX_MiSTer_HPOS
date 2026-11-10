@@ -240,6 +240,7 @@ parameter CONF_STR = {
 	"DEP1O[55],Fixed VBlank,Off,On;",
 	"d5P1O[4:3],Vertical Crop,Off,On(224/270),On(216/256);",
 	"P1O[67],Horizontal Crop,Off,On;",
+	"P1O[96:93],Analog H-Pos,0,+2,+4,+6,+8,+10,+12,+14,-16,-14,-12,-10,-8,-6,-4,-2;",
 	"P1O[61],Black Transitions,On,Off;",
 	"P1O[41],Deinterlacing,Weave,Bob;",
 	"P1O[60],Sync 480i for HDMI,Off,On;",
@@ -950,6 +951,7 @@ psx
    .fixedVBlank(status[55] && ~hack_480p),
    .vCrop(hack_480p ? 2'b00 : status[4:3]),
    .hCrop(status[67]),
+   .hPosOffset(status[96:93]),
    .SPUon(~status[30]),
    .SPUIRQTrigger(status[2]),
    .SPUSDRAM(status[44] & SDRAM2_EN),
@@ -1468,9 +1470,16 @@ logic [11:0] hb_start, hb_end;
 assign hb_start_lut = '{12'd63,  12'd50,  12'd36,  12'd31,  12'd24,  12'd0, 12'd0, 12'd0};
 assign hb_end_lut =   '{12'd767, 12'd613, 12'd441, 12'd383, 12'd305, 12'd0, 12'd0, 12'd0};
 
+// Analog H-Pos: move the fixed hblank window with the picture (2 pixels per step)
+wire [11:0] hpos_px = {{7{status[96]}}, status[96:93], 1'b0};
+
 always_comb begin
 	hb_start = hb_start_lut[video_hResMode];
 	hb_end = hb_end_lut[video_hResMode];
+	if (hb_end_lut[video_hResMode] != 12'd0) begin
+		hb_start = hb_start_lut[video_hResMode] + hpos_px;
+		hb_end = hb_end_lut[video_hResMode] + hpos_px;
+	end
 end
 
 always_ff @(posedge CLK_VIDEO) if (CE_PIXEL) begin
